@@ -1,0 +1,387 @@
+===========================================
+THAPARGO API TEST COMMANDS
+===========================================
+Base URL: http://localhost:4000
+Environment: Development
+
+SEEDED TEST DATA:
+- User 1: test1@thapar.edu (Male, Phone: 9876543210)
+- User 2: test2@thapar.edu (Female, Phone: 9876543211)
+- Pool 1: Thapar → Chandigarh (Car, 4 persons, ₹400, Mixed)
+- Pool 2: Thapar → Delhi (Train, 3 persons, ₹600, Female-only)
+
+NOTE: Replace {{TOKEN}} with actual JWT token from auth responses
+NOTE: Replace {{POOL_ID}} with actual pool ID from responses
+
+===========================================
+1. AUTHENTICATION APIS
+===========================================
+
+### 1.1 Health Check (No Auth Required)
+curl -X GET http://localhost:4000/health
+
+### 1.2 Google OAuth Login/Signup (Mock - This normally requires Google OAuth)
+# Note: This endpoint expects a real Google credential token
+# For testing, you'll need to implement a test endpoint or use actual Google OAuth
+# Alternatively, manually generate JWT tokens for test users
+
+### 1.3 Get Current User Info
+# First, you need a valid token. For testing, you can manually generate tokens for seeded users.
+# User 1 Token (you'll need to generate this with your JWT_ACCESS_SECRET)
+curl -X GET http://localhost:4000/api/auth/me \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 1.4 Logout
+curl -X POST http://localhost:4000/api/auth/logout \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+===========================================
+2. POOL APIS (All Require Authentication)
+===========================================
+
+### 2.1 Get All Pools
+curl -X GET http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.2 Get All Pools with Filters
+# Filter by start point
+curl -X GET "http://localhost:4000/api/pools?start_point=Thapar" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+# Filter by end point
+curl -X GET "http://localhost:4000/api/pools?end_point=Chandigarh" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+# Filter by transport mode
+curl -X GET "http://localhost:4000/api/pools?transport_mode=Car" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+# Filter by female-only
+curl -X GET "http://localhost:4000/api/pools?is_female_only=true" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+# Multiple filters
+curl -X GET "http://localhost:4000/api/pools?start_point=Thapar&transport_mode=Car" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.3 Get Pool by ID
+curl -X GET http://localhost:4000/api/pools/{{POOL_ID}} \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.4 Create New Pool
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Thapar University",
+    "end_point": "Mohali",
+    "departure_time": "2025-11-25T09:00:00.000Z",
+    "arrival_time": "2025-11-25T10:30:00.000Z",
+    "transport_mode": "Car",
+    "total_persons": 4,
+    "total_fare": 500,
+    "is_female_only": false
+  }'
+
+### 2.5 Create Female-Only Pool (User must be female)
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Thapar University",
+    "end_point": "Amritsar",
+    "departure_time": "2025-11-26T08:00:00.000Z",
+    "arrival_time": "2025-11-26T11:00:00.000Z",
+    "transport_mode": "Bus",
+    "total_persons": 5,
+    "total_fare": 750,
+    "is_female_only": true
+  }'
+
+### 2.6 Create Pool with Different Transport Modes
+# Train
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Patiala Railway Station",
+    "end_point": "New Delhi Railway Station",
+    "departure_time": "2025-11-27T06:00:00.000Z",
+    "arrival_time": "2025-11-27T10:00:00.000Z",
+    "transport_mode": "Train",
+    "total_persons": 6,
+    "total_fare": 1200,
+    "is_female_only": false
+  }'
+
+# Bike
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Thapar University",
+    "end_point": "Chandigarh Airport",
+    "departure_time": "2025-11-28T05:00:00.000Z",
+    "arrival_time": "2025-11-28T06:30:00.000Z",
+    "transport_mode": "Bike",
+    "total_persons": 2,
+    "total_fare": 200,
+    "is_female_only": false
+  }'
+
+### 2.7 Join a Pool
+curl -X POST http://localhost:4000/api/pools/{{POOL_ID}}/join \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.8 Leave a Pool
+curl -X POST http://localhost:4000/api/pools/{{POOL_ID}}/leave \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.9 Delete a Pool (Only creator can delete)
+curl -X DELETE http://localhost:4000/api/pools/{{POOL_ID}} \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.10 Get User's Pools (All)
+curl -X GET http://localhost:4000/api/users/me/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.11 Get User's Created Pools Only
+curl -X GET "http://localhost:4000/api/users/me/pools?type=created" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 2.12 Get User's Joined Pools Only
+curl -X GET "http://localhost:4000/api/users/me/pools?type=joined" \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+===========================================
+3. ERROR TESTING (Expected to Fail)
+===========================================
+
+### 3.1 Access Protected Route Without Token (401)
+curl -X GET http://localhost:4000/api/pools \
+  -H "Content-Type: application/json"
+
+### 3.2 Access Protected Route With Invalid Token (401)
+curl -X GET http://localhost:4000/api/pools \
+  -H "Authorization: Bearer invalid_token_here" \
+  -H "Content-Type: application/json"
+
+### 3.3 Create Pool With Invalid Data (400)
+# Missing required fields
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Thapar University"
+  }'
+
+# Invalid total_persons (too low)
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Thapar University",
+    "end_point": "Chandigarh",
+    "departure_time": "2025-11-25T09:00:00.000Z",
+    "arrival_time": "2025-11-25T10:30:00.000Z",
+    "transport_mode": "Car",
+    "total_persons": 1,
+    "total_fare": 500
+  }'
+
+# Invalid total_persons (too high)
+curl -X POST http://localhost:4000/api/pools \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_point": "Thapar University",
+    "end_point": "Chandigarh",
+    "departure_time": "2025-11-25T09:00:00.000Z",
+    "arrival_time": "2025-11-25T10:30:00.000Z",
+    "transport_mode": "Car",
+    "total_persons": 51,
+    "total_fare": 500
+  }'
+
+### 3.4 Get Non-Existent Pool (404)
+curl -X GET http://localhost:4000/api/pools/00000000-0000-0000-0000-000000000000 \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 3.5 Join Pool That's Already Full (400)
+# First, create a pool with 2 persons, then have 2 users join, then try to join with a 3rd user
+
+### 3.6 Join Female-Only Pool as Male (400)
+# Use male user token to join a female-only pool
+
+### 3.7 Try to Leave Pool You Haven't Joined (400)
+curl -X POST http://localhost:4000/api/pools/{{POOL_ID}}/leave \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+### 3.8 Try to Delete Someone Else's Pool (403)
+# Use User 2's token to delete User 1's pool
+
+### 3.9 Access Non-Existent Route (404)
+curl -X GET http://localhost:4000/api/nonexistent \
+  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "Content-Type: application/json"
+
+===========================================
+4. POWERSHELL COMMANDS (For Windows)
+===========================================
+
+# If curl doesn't work, use Invoke-RestMethod in PowerShell:
+
+### Get All Pools
+$headers = @{
+    "Authorization" = "Bearer {{TOKEN}}"
+    "Content-Type" = "application/json"
+}
+Invoke-RestMethod -Uri "http://localhost:4000/api/pools" -Method Get -Headers $headers
+
+### Create Pool
+$headers = @{
+    "Authorization" = "Bearer {{TOKEN}}"
+    "Content-Type" = "application/json"
+}
+$body = @{
+    start_point = "Thapar University"
+    end_point = "Chandigarh"
+    departure_time = "2025-11-25T09:00:00.000Z"
+    arrival_time = "2025-11-25T10:30:00.000Z"
+    transport_mode = "Car"
+    total_persons = 4
+    total_fare = 500
+    is_female_only = $false
+} | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:4000/api/pools" -Method Post -Headers $headers -Body $body
+
+===========================================
+5. QUICK TEST WORKFLOW
+===========================================
+
+Step 1: Start the server
+> npm run dev
+
+Step 2: Generate test tokens manually (using Node.js REPL)
+> node
+> const jwt = require('jsonwebtoken');
+> const token1 = jwt.sign({ userId: 'USER1_ID', email: 'test1@thapar.edu' }, 'your_jwt_access_secret', { expiresIn: '7d' });
+> console.log('User 1 Token:', token1);
+> const token2 = jwt.sign({ userId: 'USER2_ID', email: 'test2@thapar.edu' }, 'your_jwt_access_secret', { expiresIn: '7d' });
+> console.log('User 2 Token:', token2);
+
+Step 3: Run test commands
+- Replace {{TOKEN}} with generated token
+- Replace {{POOL_ID}} with actual pool IDs from responses
+
+Step 4: Test the flow
+1. Get all pools → Note pool IDs
+2. Get specific pool by ID
+3. Create new pool → Note the new pool ID
+4. Join the new pool with different user
+5. Get user's pools
+6. Leave the pool
+7. Delete the pool (as creator)
+
+===========================================
+6. TESTING WITH POSTMAN/INSOMNIA
+===========================================
+
+Import these as a collection:
+
+Base URL: http://localhost:4000
+
+Environment Variables:
+- baseUrl: http://localhost:4000
+- token: {{YOUR_JWT_TOKEN}}
+- poolId: {{POOL_ID_FROM_RESPONSE}}
+
+All requests should have:
+- Header: Authorization: Bearer {{token}}
+- Header: Content-Type: application/json
+
+===========================================
+7. EXPECTED RESPONSES
+===========================================
+
+### Successful Pool Creation (201)
+{
+  "success": true,
+  "pool": {
+    "id": "uuid",
+    "start_point": "Thapar University",
+    "end_point": "Chandigarh",
+    ...
+  },
+  "message": "Pool created successfully"
+}
+
+### Successful Pool List (200)
+{
+  "success": true,
+  "pools": [
+    {
+      "id": "uuid",
+      "start_point": "Thapar University",
+      "current_persons": 1,
+      "total_persons": 4,
+      "fare_per_head": 100,
+      "available_seats": 3,
+      "is_full": false,
+      "user_is_member": false,
+      ...
+    }
+  ]
+}
+
+### Successful Join (200)
+{
+  "success": true,
+  "message": "Successfully joined pool",
+  "pool": {
+    "id": "uuid",
+    "current_persons": 2,
+    "fare_per_head": 200,
+    "available_seats": 2,
+    "is_full": false
+  }
+}
+
+### Error Response (4xx/5xx)
+{
+  "success": false,
+  "error": "Error message here"
+}
+
+===========================================
+8. NOTES
+===========================================
+
+1. All timestamps should be in ISO 8601 format
+2. JWT tokens expire after 7 days (full auth) or 15 minutes (temp)
+3. Female-only pools can only be created by female users
+4. Pool creators cannot leave their own pools, they must delete them
+5. You can only join a pool once
+6. Pools cannot be joined when full
+7. All monetary values are in decimal format
+
+===========================================
+END OF TEST COMMANDS
+===========================================

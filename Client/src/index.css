@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Teal/Cyan primary - journey, trust */
+    --primary: 182 77% 38%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 182 77% 88%;
+    --primary-glow: 182 77% 58%;
+
+    /* Warm orange accent - energy, community */
+    --secondary: 24 95% 53%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 24 95% 95%;
+
+    /* Success green - eco-friendly */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 182 77% 95%;
+    --accent-foreground: 182 77% 28%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 182 77% 38%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(182 77% 38%), hsl(182 77% 58%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(182 77% 98%));
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-glow: 0 0 30px hsl(182 77% 58% / 0.2);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 182 77% 48%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 182 77% 18%;
+    --primary-glow: 182 77% 58%;
+
+    --secondary: 24 95% 58%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 24 95% 18%;
+
+    --success: 142 76% 42%;
+    --success-foreground: 0 0% 100%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 182 77% 18%;
+    --accent-foreground: 182 77% 78%;
+
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 182 77% 48%;
+
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 30px hsl(182 77% 58% / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1;
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .hover-lift:hover {
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .card-glow {
+    box-shadow: var(--shadow-soft), var(--shadow-glow);
+  }
+}

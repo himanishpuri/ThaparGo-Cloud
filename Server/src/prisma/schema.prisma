@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum TransportMode {
+  Car
+  Bike
+  Train
+  Bus
+  Plane
+  Ferry
+}
+
+model User {
+  id                   String    @id @default(uuid())
+  google_authenticated Boolean   @default(false)
+  email                String    @unique
+  full_name            String
+  phone_number         String?   @unique
+  gender               Gender?
+  date_joined          DateTime  @default(now())
+
+  // Relations
+  created_pools Pool[]       @relation("UserCreatedPools")
+  pools         PoolMember[] @relation("UserPoolMembership")
+
+  @@map("user")
+}
+
+model Pool {
+  id              String   @id @default(uuid())
+  start_point     String   @default("Thapar University")
+  end_point       String
+  departure_time  DateTime
+  arrival_time    DateTime
+  transport_mode  TransportMode
+  total_persons   Int
+  current_persons Int      @default(1)
+  total_fare      Decimal? // Store total fare, calculate per head dynamically
+  is_female_only  Boolean  @default(false)
+
+  // Relations
+  created_by String
+  creator    User         @relation("UserCreatedPools", fields: [created_by], references: [id], onDelete: Cascade)
+  members    PoolMember[]
+
+  @@map("pool")
+}
+
+model PoolMember {
+  id         String     @id @default(uuid())
+  is_creator Boolean @default(false)
+
+  // Relations
+  pool_id String
+  user_id String
+  pool    Pool @relation(fields: [pool_id], references: [id], onDelete: Cascade)
+  user    User @relation("UserPoolMembership", fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([pool_id, user_id]) // user can't join same pool twice
+  @@map("poolmember")
+}
