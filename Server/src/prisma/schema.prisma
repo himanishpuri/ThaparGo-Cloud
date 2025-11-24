@@ -21,13 +21,13 @@ enum TransportMode {
 }
 
 model User {
-  id                   String    @id @default(uuid())
-  google_authenticated Boolean   @default(false)
+  id                   String    @id @default(cuid())
   email                String    @unique
   full_name            String
   phone_number         String?   @unique
   gender               Gender?
   date_joined          DateTime  @default(now())
+  cognitoSub           String?   @unique
 
   // Relations
   created_pools Pool[]       @relation("UserCreatedPools")
@@ -37,7 +37,7 @@ model User {
 }
 
 model Pool {
-  id              String   @id @default(uuid())
+  id              String   @id @default(cuid())
   start_point     String   @default("Thapar University")
   end_point       String
   departure_time  DateTime
@@ -57,7 +57,7 @@ model Pool {
 }
 
 model PoolMember {
-  id         String     @id @default(uuid())
+  id         String     @id @default(cuid())
   is_creator Boolean @default(false)
 
   // Relations

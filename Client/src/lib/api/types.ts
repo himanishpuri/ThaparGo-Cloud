@@ -7,7 +7,7 @@ export interface User {
 	full_name: string;
 	phone_number?: string;
 	gender?: "Male" | "Female";
-	google_authenticated: boolean;
+	// google_authenticated: boolean;
 	hasCompletedOnboarding: boolean;
 	date_joined?: string;
 }
