@@ -1,3 +1,5 @@
+import axios from "axios";
+
 interface CognitoTokenResponse {
 	id_token: string;
 	access_token: string;
@@ -31,30 +33,16 @@ export const exchangeCodeForTokens = async (
 	});
 
 	try {
-		const response = await fetch(tokenUrl, {
-			method: "POST",
+		const response = await axios.post(tokenUrl, params.toString(), {
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
-			body: params.toString(),
 		});
 
-		if (!response.ok) {
-			const errorData = await response
-				.json()
-				.catch(() => ({ error: "Unknown error" }));
-			throw new Error(
-				`Cognito token exchange failed: ${
-					errorData.error || "Unknown error"
-				}`,
-			);
-		}
-
-		return await response.json();
+		return response.data;
 	} catch (error: any) {
-		throw new Error(
-			error.message || "Failed to exchange authorization code for tokens",
-		);
+		const errorMessage = error.response?.data?.error || error.message;
+		throw new Error(`Cognito token exchange failed: ${errorMessage}`);
 	}
 };
 
@@ -64,28 +52,15 @@ export const getUserInfoFromToken = async (
 	const userInfoUrl = `https://${COGNITO_DOMAIN}.auth.${COGNITO_REGION}.amazoncognito.com/oauth2/userInfo`;
 
 	try {
-		const response = await fetch(userInfoUrl, {
-			method: "GET",
+		const response = await axios.get(userInfoUrl, {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 			},
 		});
 
-		if (!response.ok) {
-			const errorData = await response
-				.json()
-				.catch(() => ({ error: "Unknown error" }));
-			throw new Error(
-				`Cognito user info fetch failed: ${
-					errorData.error || "Unknown error"
-				}`,
-			);
-		}
-
-		return await response.json();
+		return response.data;
 	} catch (error: any) {
-		throw new Error(
-			error.message || "Failed to fetch user info from Cognito",
-		);
+		const errorMessage = error.response?.data?.error || error.message;
+		throw new Error(`Cognito user info fetch failed: ${errorMessage}`);
 	}
 };
