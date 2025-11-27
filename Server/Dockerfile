@@ -30,7 +30,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://0.0.0.0:80/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Start script that runs migrations then starts the app
-RUN echo '#!/bin/sh\ncd src/prisma\nnpx prisma db push --accept-data-loss\ncd ../..\nnpx tsx src/index.ts' > /app/start.sh && chmod +x /app/start.sh
+RUN printf '#!/bin/sh\nset -e\ncd src/prisma\nnpx prisma db push --accept-data-loss\ncd ../..\nexec npx tsx src/index.ts\n' > /app/start.sh && chmod +x /app/start.sh
 
 # Start the application
-CMD ["/app/start.sh"]
+CMD ["sh", "/app/start.sh"]
+

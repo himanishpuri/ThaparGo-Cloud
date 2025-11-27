@@ -59,9 +59,6 @@ services:
             condition: service_healthy
       networks:
          - thapargo-network
-      volumes:
-         - ./Server:/app
-         - /app/node_modules
 
 networks:
    thapargo-network:
