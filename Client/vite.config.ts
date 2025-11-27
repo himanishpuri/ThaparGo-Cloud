@@ -9,6 +9,12 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  preview: {
+    host: "0.0.0.0",
+    port: 3000,
+    strictPort: true,
+    allowedHosts: ["ec2-34-227-9-115.compute-1.amazonaws.com"],
+  },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
