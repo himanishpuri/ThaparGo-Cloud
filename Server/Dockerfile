@@ -23,11 +23,14 @@ RUN npx prisma generate --schema=./src/prisma/schema.prisma
 COPY . .
 
 # Expose port
-EXPOSE 4000
+EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:4000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://0.0.0.0:80/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start the application with tsx (runs TypeScript directly)
-CMD ["npx", "tsx", "src/index.ts"]
+# Start script that runs migrations then starts the app
+RUN echo '#!/bin/sh\ncd src/prisma\nnpx prisma db push --accept-data-loss\ncd ../..\nnpx tsx src/index.ts' > /app/start.sh && chmod +x /app/start.sh
+
+# Start the application
+CMD ["/app/start.sh"]
