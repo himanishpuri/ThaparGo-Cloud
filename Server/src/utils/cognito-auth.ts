@@ -15,12 +15,12 @@ interface CognitoUserInfo {
 	name?: string;
 }
 
-const COGNITO_DOMAIN = process.env.COGNITO_DOMAIN || "us-east-1ult8nlld8";
-const COGNITO_REGION = process.env.COGNITO_REGION || "us-east-1";
+const COGNITO_DOMAIN = process.env.COGNITO_DOMAIN 
+const COGNITO_REGION = process.env.COGNITO_REGION
 const COGNITO_CLIENT_ID =
-	process.env.COGNITO_CLIENT_ID || "10igprltmk0ore1fosdqkvmkp4";
+	process.env.COGNITO_CLIENT_ID
 const COGNITO_REDIRECT_URI =
-	process.env.COGNITO_REDIRECT_URI || "http://localhost:8080/buffer";
+	process.env.COGNITO_REDIRECT_URI
 
 export const exchangeCodeForTokens = async (
 	code: string,
