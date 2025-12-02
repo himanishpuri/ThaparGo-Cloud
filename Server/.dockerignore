@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.local
+.git
+.gitignore
+npm-debug.log
+.DS_Store
+*.log
+coverage
+.vscode
+.idea
+README.md
+API_REQUIREMENTS.md
+API_TEST_COMMANDS.txt
+logs
