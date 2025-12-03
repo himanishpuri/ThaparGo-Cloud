@@ -61,8 +61,8 @@ const Navbar = () => {
 		<nav
 			className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
 				isScrolled
-					? "bg-background/95 backdrop-blur-md shadow-md"
-					: "bg-transparent"
+					? "bg-background/98 backdrop-blur-lg shadow-lg"
+					: "bg-background/80 backdrop-blur-sm"
 			}`}
 		>
 			<div className="container mx-auto px-4 py-4">
@@ -145,62 +145,64 @@ const Navbar = () => {
 
 				{/* Mobile Menu */}
 				{isMenuOpen && (
-					<div className="md:hidden mt-4 pb-4 flex flex-col gap-4 animate-fade-in">
+					<div className="md:hidden mt-4 pb-4 pt-4 px-2 bg-background/95 backdrop-blur-lg rounded-lg shadow-lg border border-border flex flex-col gap-4 animate-fade-in">
 						<button
 							onClick={() => scrollToSection("home")}
-							className="text-left text-foreground hover:text-primary transition-colors"
+							className="text-left text-foreground hover:text-primary transition-colors py-2 px-3 hover:bg-accent rounded-md"
 						>
 							Home
 						</button>
 						<button
 							onClick={() => scrollToSection("why-thapargo")}
-							className="text-left text-foreground hover:text-primary transition-colors"
+							className="text-left text-foreground hover:text-primary transition-colors py-2 px-3 hover:bg-accent rounded-md"
 						>
 							Why Thapargo
 						</button>
 						<button
 							onClick={() => scrollToSection("about")}
-							className="text-left text-foreground hover:text-primary transition-colors"
+							className="text-left text-foreground hover:text-primary transition-colors py-2 px-3 hover:bg-accent rounded-md"
 						>
 							About
 						</button>
 						<button
 							onClick={() => scrollToSection("faq")}
-							className="text-left text-foreground hover:text-primary transition-colors"
+							className="text-left text-foreground hover:text-primary transition-colors py-2 px-3 hover:bg-accent rounded-md"
 						>
 							FAQ
 						</button>
 						{user && (
 							<Link
 								to="/pools"
-								className="text-left text-foreground hover:text-primary transition-colors"
+								className="text-left text-foreground hover:text-primary transition-colors py-2 px-3 hover:bg-accent rounded-md"
 								onClick={() => setIsMenuOpen(false)}
 							>
 								Pools
 							</Link>
 						)}
-						{user ? (
-							<>
-								<span className="text-sm text-muted-foreground">
-									{user.full_name}
-								</span>
-								<Button
-									onClick={handleLogout}
-									variant="outline"
-									size="sm"
-									className="w-full"
+						<div className="border-t border-border pt-3 mt-2">
+							{user ? (
+								<>
+									<span className="text-sm text-muted-foreground px-3 block mb-3">
+										{user.full_name}
+									</span>
+									<Button
+										onClick={handleLogout}
+										variant="outline"
+										size="sm"
+										className="w-full"
+									>
+										Logout
+									</Button>
+								</>
+							) : (
+								<Link
+									to="/auth"
+									onClick={() => setIsMenuOpen(false)}
 								>
-									Logout
-								</Button>
-							</>
-						) : (
-							<Link
-								to="/auth"
-								onClick={() => setIsMenuOpen(false)}
-							>
-								<Button className="w-full">Login</Button>
-							</Link>
-						)}
+									<Button className="w-full">Login</Button>
+								</Link>
+							)}
+						</div>
 					</div>
 				)}
 			</div>

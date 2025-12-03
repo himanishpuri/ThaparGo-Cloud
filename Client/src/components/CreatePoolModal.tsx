@@ -121,7 +121,7 @@ const CreatePoolModal = ({
 			open={open}
 			onOpenChange={onClose}
 		>
-			<DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+			<DialogContent className="max-w-md max-h-[90vh] overflow-y-auto sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>Create a New Pool</DialogTitle>
 					<DialogDescription>
@@ -131,7 +131,7 @@ const CreatePoolModal = ({
 
 				<form
 					onSubmit={handleSubmit}
-					className="space-y-4"
+					className="space-y-4 pb-4"
 				>
 					<div className="space-y-2">
 						<Label htmlFor="start_point">Start Point</Label>
@@ -160,12 +160,13 @@ const CreatePoolModal = ({
 						/>
 					</div>
 
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<div className="space-y-2">
 							<Label htmlFor="departure_time">Departure</Label>
 							<Input
 								id="departure_time"
 								type="datetime-local"
+								className="w-full"
 								value={formData.departure_time}
 								onChange={(e) =>
 									setFormData({
@@ -181,6 +182,7 @@ const CreatePoolModal = ({
 							<Input
 								id="arrival_time"
 								type="datetime-local"
+								className="w-full"
 								value={formData.arrival_time}
 								onChange={(e) =>
 									setFormData({
@@ -214,7 +216,7 @@ const CreatePoolModal = ({
 						</Select>
 					</div>
 
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<div className="space-y-2">
 							<Label htmlFor="total_persons">Total Seats</Label>
 							<Input
@@ -222,6 +224,7 @@ const CreatePoolModal = ({
 								type="number"
 								min="2"
 								max="10"
+								className="w-full"
 								value={formData.total_persons}
 								onChange={(e) =>
 									setFormData({
@@ -240,6 +243,7 @@ const CreatePoolModal = ({
 								min="0"
 								step="0.01"
 								placeholder="200.00"
+								className="w-full"
 								value={formData.fare_per_head}
 								onChange={(e) =>
 									setFormData({
